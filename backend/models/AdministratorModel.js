@@ -7,9 +7,11 @@ const AdministratorSchema = new Schema(
     first_name: { type: String, required: true },
     last_name: { type: String, required: true },
     login_attempts: { type: Number, default: 0, required: true },
-    super: { type: Boolean, default: false, required: true },
+    faculty: { type: String, required: true },
+    department: { type: String, required: true },
     password: { type: String, required: true },
     phone: { type: Number, required: true },
+    staff_id: { type: String, required: true },
   },
   {
     timestamps: true,

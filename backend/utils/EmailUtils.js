@@ -16,7 +16,7 @@ module.exports.sendEmail = async (address, subject, msg) => {
 
     // send mail with defined transport object
     await transporter.sendMail({
-      from: "QR Code Attendance '<swat@qcell.com>'", // sender'S address
+      from: "QR Code Attendance '<test@test.com>'", // sender'S address
       to: address, // list of receivers ["",""]
       subject, // Subject line
       text: msg, // plain text body

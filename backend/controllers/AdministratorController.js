@@ -8,27 +8,28 @@ const { generateRandomPassword, hashPassword, matchPassword } = require("../util
 const { generateToken } = require("../utils/TokenUtils")
 
 module.exports.registerAdministrator = asyncHandler(async (req, res) => {
-  const { first_name, last_name, gender, phone, email } = req.body
+  const { first_name, last_name, staff_id, email, faculty, department, phone } = req.body
+  console.log(req.body)
   let generated_password = await generateRandomPassword(10)
+  console.log(generated_password)
   const password = await hashPassword(generated_password)
-
-  let new_administrator = new AdministratorModel.create({
+  let administrator = await AdministratorModel.create({
     first_name,
     last_name,
-    gender,
-    phone,
+    staff_id,
     email,
+    faculty,
+    department,
+    phone,
     password,
   })
-  if (new_administrator) {
-    await sendEmail(email, "QRCode Attendance", `Your password is ${generated_password}`)
+  if (administrator) {
+    // await sendEmail(email, "QRCode Attendance", `Your password is ${generated_password}`)
+    console.log("send email")
     res.status(201).json({
-      message: "user successfully created",
-      user: {
-        id: user._id,
-        first_name: user.firstName,
-        last_name: user.lastName,
-      },
+      id: administrator._id,
+      first_name: administrator.first_name,
+      last_name: administrator.last_name,
     })
   } else {
     res.status(400)

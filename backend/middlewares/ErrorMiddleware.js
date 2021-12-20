@@ -16,12 +16,6 @@ module.exports.errorHandler = (err, req, res, next) => {
     : err.message
     ? err.message
     : "uncaught error message"
-
-  req.body.error = { status_code, message, stack: err.stack }
-
-  if (typeof message == "string") {
-    res.status(status_code).json({ msgUser: message, status_code })
-  } else {
-    res.status(status_code).json({ ...message, status_code })
-  }
+  console.log(message)
+  res.status(status_code).json({ message, status_code })
 }
