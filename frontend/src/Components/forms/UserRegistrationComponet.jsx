@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { useDispatch } from "react-redux"
+import React, { useState, useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { Row, Col, Form, Button } from "react-bootstrap"
 import {
   PersonCircle,
@@ -13,13 +13,18 @@ import {
   UnlockFill,
 } from "react-bootstrap-icons"
 import { userRegistrationAction } from "../../redux/users/Actions"
-import FormFieldComponent from "../../Components/FormFieldComponent"
-import { AbsoluteCenter } from "../../Components/CustomStyledComponents"
+import { fecthFacultiesAction } from "../../redux/faculties/Actions"
+import FormFieldComponent from "../FormFieldComponent"
+import { AbsoluteCenter } from "../CustomStyledComponents"
 
 const RegistrationPage = () => {
   const dispatch = useDispatch()
+  const fetchFaculties = useSelector(state => state.fetchFaculties)
+  const { faculties } = fetchFaculties
 
-  // useEffect(() => {}, [])
+  useEffect(() => {
+    dispatch(fecthFacultiesAction())
+  }, [dispatch])
 
   const [department, setDepartment] = useState("")
   const [email, setEmail] = useState("")
@@ -91,7 +96,7 @@ const RegistrationPage = () => {
       icon: <Building color='green' />,
       type: "select",
       required: true,
-      options: ["Art", "Science", "Management", "No Academics"],
+      options: faculties,
       placeholder: "",
       size: "sm",
       value: faculty,

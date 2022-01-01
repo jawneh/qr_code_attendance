@@ -2,7 +2,7 @@ import styled from "styled-components"
 import { device } from "../utils/ScreenDeviceSizes"
 
 export const AbsoluteCenter = styled.div`
-  position: absolute;
+  position: relative;
   margin: auto;
   top: 0;
   left: 0;
@@ -11,6 +11,8 @@ export const AbsoluteCenter = styled.div`
   max-width: 50vw;
   height: max-content;
   padding: 1rem;
+  margin-top: 5rem;
+  margin-bottom: 5rem;
   justify-content: center;
   align-items: center;
   border-radius: 5px;

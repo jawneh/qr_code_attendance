@@ -1,19 +1,18 @@
 const crypto = require("crypto")
 const asyncHandler = require("express-async-handler")
-const AdministratorModel = require("../models/AdministratorModel")
-const StudentModel = require("../models/StudentModel")
+const UserModel = require("../models/UsersModel")
 const ResetPasswordModel = require("../models/PasswordResetModel")
 const { sendEmail } = require("../utils/EmailUtils")
 const { generateRandomPassword, hashPassword, matchPassword } = require("../utils/PasswordUtils")
 const { generateToken } = require("../utils/TokenUtils")
 
-module.exports.registerAdministrator = asyncHandler(async (req, res) => {
+module.exports.registerUser = asyncHandler(async (req, res) => {
   const { first_name, last_name, staff_id, email, faculty, department, phone } = req.body
   console.log(req.body)
   let generated_password = await generateRandomPassword(10)
   console.log(generated_password)
   const password = await hashPassword(generated_password)
-  let administrator = await AdministratorModel.create({
+  let user = await UserModel.create({
     first_name,
     last_name,
     staff_id,
@@ -23,13 +22,13 @@ module.exports.registerAdministrator = asyncHandler(async (req, res) => {
     phone,
     password,
   })
-  if (administrator) {
+  if (user) {
     // await sendEmail(email, "QRCode Attendance", `Your password is ${generated_password}`)
     console.log("send email")
     res.status(201).json({
-      id: administrator._id,
-      first_name: administrator.first_name,
-      last_name: administrator.last_name,
+      id: user._id,
+      first_name: user.first_name,
+      last_name: user.last_name,
     })
   } else {
     res.status(400)
@@ -40,10 +39,10 @@ module.exports.registerAdministrator = asyncHandler(async (req, res) => {
 // @Desc Auth User & get an access Token
 // @Route POST /api/users/login
 // @Access Public
-module.exports.loginAdministrator = asyncHandler(async (req, res) => {
+module.exports.loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
 
-  const administrator = await AdministratorModel.findOne({ email }) //find record of adminstrator
+  const administrator = await UserModel.findOne({ email }) //find record of adminstrator
 
   if (administrator && (await matchPassword(password, administrator.password))) {
     if (administrator.active) {
@@ -89,29 +88,16 @@ module.exports.loginAdministrator = asyncHandler(async (req, res) => {
 //@desc get all users for admin
 //@route GET /api/users/
 //@access Private/Admin
-module.exports.fetchAllUser = asyncHandler(async (req, res) => {
-  const { user } = req.params.user
-  let person_of_interest
-  switch (user) {
-    case "administrator":
-      persons = await AdministratorModel.find({}).select("-password,-_id")
-      break
-    case "student":
-      persons = await StudentModel.find({}).select("-password,-_id")
-      break
-    case "lecturer":
-      persons = await AdministratorModel.find({}).select("-password,-_id")
-      break
-    default:
-      person_of_interest = []
-  }
-  res.status(200).json(person_of_interest)
+module.exports.fetchUsers = asyncHandler(async (req, res) => {
+  const { is_who } = req.params.user
+  users = await UserModel.find({}).select("-password,-_id")
+  res.status(200).json(users)
 })
 
 //@desc get all users for admin
 //@route GET /api/users/
 //@access Private/Admin
-module.exports.fetchOneAdministrator = asyncHandler(async (req, res) => {
+module.exports.fetchUser = asyncHandler(async (req, res) => {
   const { id } = req.params.id
   const administrator = await User.findOne({ _id: id }).select("-password")
   if (administrator) {
@@ -125,7 +111,7 @@ module.exports.fetchOneAdministrator = asyncHandler(async (req, res) => {
 module.exports.changePassword = asyncHandler(async (req, res) => {
   let { email, password, new_password } = req.body
 
-  const administrator = await AdministratorModel.findOne({ email })
+  const administrator = await UserModel.findOne({ email })
 
   if (administrator && (await matchPassword(password, administrator.password))) {
     new_password = await hashPassword(new_password)
@@ -140,7 +126,7 @@ module.exports.changePassword = asyncHandler(async (req, res) => {
 
 module.exports.forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body
-  const administrator = await AdministratorModel.findOne({ email }).select("email,password")
+  const administrator = await UserModel.findOne({ email }).select("email,password")
 
   if (administrator) {
     //send recovery link to found email
@@ -174,7 +160,7 @@ module.exports.forgotPassword = asyncHandler(async (req, res) => {
 module.exports.resetPassword = asyncHandler(async (req, res) => {
   const { reset_token, reset_id } = req.query
   //get user associated with token
-  let administrator = await AdministratorModel.findById(reset_id)
+  let administrator = await UserModel.findById(reset_id)
   if (administrator) {
     let reset_password = await ResetPasswordModel.findOne({
       user_id: reset_id,

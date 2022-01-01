@@ -13,7 +13,9 @@ const morgan = require("morgan")
 const connectMongoDB = require("./database/MongoConfig")
 
 /** ROUTES and it's Midwares : REQUIRED */
-const AdministrationRoutes = require("./routes/AdministratorRoutes")
+const UsersRoutes = require("./routes/UsersRoutes")
+const FacultyRoutes = require("./routes/FacultyRoutes")
+const DeparmtentRoutes = require("./routes/DepartmentRoutes")
 const { notFound, errorHandler } = require("./middlewares/ErrorMiddleware")
 
 //connect to mongoDB, handles password reset
@@ -37,7 +39,9 @@ app.use(morgan("dev")) //dev console logging
 app.get("/", (req, res) => {
   res.status(200).json({ qrcode: "Welcome to the QR Code Attendace System!" })
 })
-app.use("/admin", AdministrationRoutes)
+app.use("/user", UsersRoutes)
+app.use("/faculty", FacultyRoutes)
+app.use("/department", DeparmtentRoutes)
 app.use(notFound) //not found route hanlder
 app.use(errorHandler) //handles all errors and error response
 

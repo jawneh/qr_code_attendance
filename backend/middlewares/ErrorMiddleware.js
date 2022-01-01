@@ -16,6 +16,7 @@ module.exports.errorHandler = (err, req, res, next) => {
     : err.message
     ? err.message
     : "uncaught error message"
+  console.log(err)
   console.log(message)
   res.status(status_code).json({ message, status_code })
 }

@@ -1,6 +1,6 @@
 import React from "react"
 import { Form } from "react-bootstrap"
-import { PersonCircle } from "react-bootstrap-icons"
+
 const FormFieldComponent = ({
   control_id,
   label,
@@ -13,7 +13,7 @@ const FormFieldComponent = ({
   helper_text,
   handleFieldValue,
 }) => {
-  if (type == "text") {
+  if (type === "text" || type === "password") {
     return (
       <Form.Group className='mb-3' controlId={control_id}>
         <Form.Label>
@@ -33,7 +33,7 @@ const FormFieldComponent = ({
         <Form.Text className='text-muted'>{helper_text}</Form.Text>
       </Form.Group>
     )
-  } else if (type == "select") {
+  } else if (type === "select") {
     return (
       <Form.Group className='mb-3'>
         <Form.Label>
@@ -47,8 +47,8 @@ const FormFieldComponent = ({
           <option value=''>Choose one</option>
           {options &&
             options.map((opt, index) => (
-              <option value={opt} key={index}>
-                {opt}
+              <option value={opt._id} key={index}>
+                {opt.name}
               </option>
             ))}
         </Form.Select>

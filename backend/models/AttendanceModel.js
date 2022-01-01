@@ -3,12 +3,12 @@ const { Schema } = moongoose
 
 const AttendanceSchema = new Schema(
   {
-    course_id: { type: Object, required: true },
+    course_id: { type: Schema.Types.ObjectId, ref: "courses", required: true },
     end_time: { type: Date, required: true },
-    lecturer_id: { type: Schema.Types.ObjectId, ref: "lecturers", required: true },
+    owner: { type: Schema.Types.ObjectId, ref: "users", required: true },
     start_time: { type: Date, required: true },
     qr_code: { type: String, required: true },
-    attendees: [{ type: Schema.Types.ObjectId, ref: "attendees" }],
+    attendees: [{ type: Schema.Types.ObjectId, ref: "users" }],
   },
   {
     timestamps: true,

@@ -3,11 +3,12 @@ const { Schema } = moongoose
 
 const FacultytSchema = new Schema(
   {
-    name: { type: Object, required: true },
+    name: { type: String, required: true, unique: true },
+    departments: [{ type: Schema.Types.ObjectId, ref: "departments" }],
   },
   {
     timestamps: true,
   }
 )
 
-module.exports = moongoose.model("faculty", FacultytSchema)
+module.exports = moongoose.model("faculties", FacultytSchema)

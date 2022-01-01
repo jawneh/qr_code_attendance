@@ -3,8 +3,8 @@ const { Schema } = moongoose
 
 const DepartmentSchema = new Schema(
   {
-    name: { type: String, required: true },
-    faculty: { type: Object, required: true },
+    name: { type: String, required: true, unique: true },
+    faculty_id: { type: Schema.Types.ObjectId, ref: "faculties", required: true },
   },
   {
     timestamps: true,
