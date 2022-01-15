@@ -44,22 +44,21 @@ app.use("/course", CourseRoutes)
 app.use("/department", DeparmtentRoutes)
 app.use("/faculty", FacultyRoutes)
 app.use("/user", UsersRoutes)
-app.use(notFound) //not found route hanlder
-app.use(errorHandler) //handles all errors and error response
 
 // const __dirname = path.resolve()
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.resolve(__dirname, "../frontend/build")))
-  app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
-  )
+  console.log(__dirname)
+  app.use(express.static(path.join(__dirname, "../frontend/build")))
+  app.get("*", (req, res) => res.sendFile(path.join(__dirname, "../frontend/build/index.html")))
 } else {
   app.get("/", (req, res) => {
     res.status(200).json({ qrcode: "Welcome to the QR Code Attendace System!" })
   })
   app.get("/favicon.ico", (req, res) => res.status(204))
 }
+app.use(notFound) //not found route hanlder
+app.use(errorHandler) //handles all errors and error response
 
 app.listen(process.env.PORT || 5100, () => {
   console.log(
