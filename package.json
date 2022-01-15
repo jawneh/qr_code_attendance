@@ -6,11 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "backend_dev": "nodemon backend/server.js",
-    "backend_pro": "node backend/server.js",
+    "start": "node backend/server.js",
     "frontend": "npm start --prefix frontend",
     "app_dev": "concurrently \"npm run backend_dev\" \"npm run frontend\"",
-    "app_pro": "concurrently \"npm run backend_pro\" \"npm run frontend\"",
-    "qrcode": "node ./utils/QRCodeUtils.js"
+    "app_pro": "concurrently \"npm run start\" \"npm run frontend\"",
+    "heroku-postbuild": "npm install --prefix frontend && npm run build --prefix frontend"
   },
   "repository": {
     "type": "git",
