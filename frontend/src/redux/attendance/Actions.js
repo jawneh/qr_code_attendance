@@ -1,16 +1,16 @@
 import axios from "axios"
 import {
-  ADD_FACULTY_REQUEST,
-  ADD_FACULTY_SUCCESS,
-  ADD_FACULTY_FAIL,
-  FETCH_FACULTIES_REQUEST,
-  FETCH_FACULTIES_SUCCESS,
-  FETCH_FACULTIES_FAIL,
+  GET_ATTENDANCE_REQUEST,
+  GET_ATTENDANCE_SUCCESS,
+  GET_ATTENDANCE_FAIL,
+  GET_ATTENDANCES_REQUEST,
+  GET_ATTENDANCES_SUCCESS,
+  GET_ATTENDANCES_FAIL,
 } from "./Constants"
 
-export const addFacultyAction = faculty_data => async (dispatch, getState) => {
+export const getAttendanceAction = id => async (dispatch, getState) => {
   try {
-    dispatch({ type: ADD_FACULTY_REQUEST })
+    dispatch({ type: GET_ATTENDANCE_REQUEST })
     const {
       qrCodeUserLogin: { user_info },
     } = getState()
@@ -20,20 +20,20 @@ export const addFacultyAction = faculty_data => async (dispatch, getState) => {
         Authorization: `Bearer ${user_info.token}`,
       },
     }
-    let { data } = await axios.post("/faculty", faculty_data, config)
-    dispatch({ type: ADD_FACULTY_SUCCESS, payload: data })
+    let { data } = await axios.get(`/attendance/${id}`, "", config)
+    dispatch({ type: GET_ATTENDANCE_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
-      type: ADD_FACULTY_FAIL,
+      type: GET_ATTENDANCE_FAIL,
       payload:
         error.response && error.response.data.message ? error.response.data.message : error.message,
     })
   }
 }
 
-export const fetchFacultiesAction = () => async (dispatch, getState) => {
+export const getAttendancesAction = () => async (dispatch, getState) => {
   try {
-    dispatch({ type: FETCH_FACULTIES_REQUEST })
+    dispatch({ type: GET_ATTENDANCES_REQUEST })
     const {
       qrCodeUserLogin: { user_info },
     } = getState()
@@ -43,12 +43,11 @@ export const fetchFacultiesAction = () => async (dispatch, getState) => {
         Authorization: `Bearer ${user_info.token}`,
       },
     }
-
-    let { data } = await axios.get("/faculty", "", config)
-    dispatch({ type: FETCH_FACULTIES_SUCCESS, payload: data })
+    let { data } = await axios.get("/attendance", "", config)
+    dispatch({ type: GET_ATTENDANCES_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
-      type: FETCH_FACULTIES_FAIL,
+      type: GET_ATTENDANCES_FAIL,
       payload:
         error.response && error.response.data.message ? error.response.data.message : error.message,
     })

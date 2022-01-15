@@ -15,14 +15,13 @@ module.exports.addFaculty = asyncHandler(async (req, res) => {
 })
 
 module.exports.fetchFaculties = asyncHandler(async (req, res) => {
-  let faculties = await FacultyModel.find({}).select("_id name")
-  console.log(faculties)
+  let faculties = await FacultyModel.find({}).select("_id name departments")
   res.status(200).json(faculties)
 })
 
 module.exports.fetchFaculty = asyncHandler(async (req, res) => {
   const { id } = req.params
-  let faculty = await FacultyModel.findById(id).select("_id name")
+  let faculty = await FacultyModel.findById(id).select("_id name").populate("departments")
   res.status(200).json(faculty)
 })
 
@@ -35,7 +34,7 @@ module.exports.updateFaculty = asyncHandler(async (req, res) => {
   if (faculty) {
     faculty.name = name
     await faculty.save()
-    res.status(201).json(faculty.name)
+    res.status(201).json(`${faculty.name} added successfully`)
   } else {
     res.status(401)
     throw new Error("invalid credentials")

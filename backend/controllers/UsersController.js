@@ -1,35 +1,39 @@
 const crypto = require("crypto")
 const asyncHandler = require("express-async-handler")
 const UserModel = require("../models/UsersModel")
+const CourseModel = require("../models/CourseModel")
 const ResetPasswordModel = require("../models/PasswordResetModel")
 const { sendEmail } = require("../utils/EmailUtils")
 const { generateRandomPassword, hashPassword, matchPassword } = require("../utils/PasswordUtils")
 const { generateToken } = require("../utils/TokenUtils")
 
 module.exports.registerUser = asyncHandler(async (req, res) => {
-  const { first_name, last_name, staff_id, email, faculty, department, phone } = req.body
-  console.log(req.body)
-  let generated_password = await generateRandomPassword(10)
-  console.log(generated_password)
-  const password = await hashPassword(generated_password)
-  let user = await UserModel.create({
+  const {
     first_name,
     last_name,
-    staff_id,
+    university_id,
     email,
-    faculty,
-    department,
-    phone,
+    faculty_id,
+    department_id,
     password,
+    phone,
+  } = req.body
+  // let generated_password = await generateRandomPassword(10)
+  const hash_password = await hashPassword(password)
+  let user = await UserModel.create({
+    email,
+    department_id,
+    faculty_id,
+    first_name,
+    last_name,
+    password: hash_password,
+    phone,
+    university_id,
   })
   if (user) {
     // await sendEmail(email, "QRCode Attendance", `Your password is ${generated_password}`)
     console.log("send email")
-    res.status(201).json({
-      id: user._id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-    })
+    res.status(201).json("Account registered, kindly verify your email to activate account")
   } else {
     res.status(400)
     throw new Error("Failed to create or get created user")
@@ -41,39 +45,43 @@ module.exports.registerUser = asyncHandler(async (req, res) => {
 // @Access Public
 module.exports.loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body
+  let test = await hashPassword(password)
 
-  const administrator = await UserModel.findOne({ email }) //find record of adminstrator
+  const user = await UserModel.findOne({ email }) //find record of adminstrator
 
-  if (administrator && (await matchPassword(password, administrator.password))) {
-    if (administrator.active) {
-      administrator.login_attempts = 0 //reset login attempts to 0
-      await administrator.save()
-      const token = await generateToken(administrator.id, administrator.email)
+  if (user && (await matchPassword(password, user.password))) {
+    if (user.active) {
+      user.login_attempts = 0 //reset login attempts to 0
+      await user.save()
+      const token = await generateToken(user.id, user.email)
 
       res.status(200).json({
-        first_name: administrator.first_name,
-        last_name: administrator.last_name,
-        email: administrator.email,
-        super: administrator.super,
+        user_id: user._id,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        email: user.email,
+        is_admin: user.is_admin,
+        is_student: user.is_student,
+        is_lecturer: user.is_lecturer,
         token,
       })
     } else {
       res.status(401)
       throw new Error("Account not active")
     }
-  } else if (administrator && !(await matchPassword(password, administrator.password))) {
-    if (administrator.active) {
-      if (administrator.login_attempts >= 2) {
-        administrator.login_attempts = 3
-        administrator.active = false
-        await administrator.save()
+  } else if (user && !(await matchPassword(password, user.password))) {
+    if (user.active) {
+      if (user.login_attempts >= 4) {
+        user.login_attempts = 5
+        user.active = false
+        await user.save()
         res.status(401)
         throw new Error("Your account has been deactivated")
       } else {
-        administrator.login_attempts = Number(administrator.login_attempts) + 1
-        await administrator.save()
+        user.login_attempts = Number(user.login_attempts) + 1
+        await user.save()
         res.status(401)
-        throw new Error("Invalid email or password")
+        throw new Error("Invalid password")
       }
     } else {
       res.status(401)
@@ -85,12 +93,18 @@ module.exports.loginUser = asyncHandler(async (req, res) => {
   }
 })
 
+module.exports.addCourse = asyncHandler(async (req, res) => {
+  const { course_id, user_id } = req.body
+  await UserModel.updateOne({ _id: user_id }, { $push: { courses: course_id } })
+  res.status(201).json("course added successfully")
+})
+
 //@desc get all users for admin
 //@route GET /api/users/
 //@access Private/Admin
 module.exports.fetchUsers = asyncHandler(async (req, res) => {
-  const { is_who } = req.params.user
-  users = await UserModel.find({}).select("-password,-_id")
+  // const {} = req.query
+  users = await UserModel.find({}).select("-password").populate(["department_id", "faculty_id"])
   res.status(200).json(users)
 })
 
@@ -99,9 +113,11 @@ module.exports.fetchUsers = asyncHandler(async (req, res) => {
 //@access Private/Admin
 module.exports.fetchUser = asyncHandler(async (req, res) => {
   const { id } = req.params.id
-  const administrator = await User.findOne({ _id: id }).select("-password")
-  if (administrator) {
-    res.status(200).json(administrator)
+  const user = await User.findOne({ _id: id })
+    .select("-password")
+    .populate(["faculties", "courses", "departments"])
+  if (user) {
+    res.status(200).json(user)
   } else {
     res.status(404)
     throw new Error("Administrator doesn't exist")

@@ -6,10 +6,12 @@ const {
   fetchDepartments,
   updateDepartment,
 } = require("../controllers/DepartmentController")
+const { verifyFacultyExist } = require("../middlewares/VerificationMiddleware")
+const { authBearerToken, authAdminAccess } = require("../middlewares/AuthenticationMiddleware")
 
-router.get("/:id", fetchDepartment)
-router.get("/", fetchDepartments)
-router.post("/", addDepartment)
-router.patch("/:id", updateDepartment)
+router.get("/:id", authBearerToken, fetchDepartment)
+router.get("/", authBearerToken, fetchDepartments)
+router.post("/", authBearerToken, authAdminAccess, verifyFacultyExist, addDepartment)
+router.patch("/:id", authBearerToken, authAdminAccess, updateDepartment)
 
 module.exports = router

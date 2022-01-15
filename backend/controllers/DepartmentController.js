@@ -1,14 +1,18 @@
 const asyncHandler = require("express-async-handler")
 const DepartmentModel = require("../models/DepartmentModel")
+const FacultyModel = require("../models/FacultyModel")
 
 module.exports.addDepartment = asyncHandler(async (req, res) => {
   const { name, faculty_id } = req.body
-  let department = await DepartmentModel.create({
+
+  const department = new DepartmentModel({
     name,
     faculty_id,
   })
-  if (department) {
-    res.status(201).json(department.name)
+  await department.save()
+  if (department._id) {
+    await FacultyModel.updateOne({ _id: faculty_id }, { $push: { departments: department._id } })
+    res.status(201).json(`Successfully added ${department.name}`)
   } else {
     res.status(400)
     throw new Error("Failed to add new department")
@@ -16,8 +20,8 @@ module.exports.addDepartment = asyncHandler(async (req, res) => {
 })
 
 module.exports.fetchDepartments = asyncHandler(async (req, res) => {
-  let department = await DepartmentModel.find({}).select("_id name")
-  res.status(200).json(department)
+  let departments = await DepartmentModel.find({}).select("_id name")
+  res.status(200).json(departments)
 })
 
 module.exports.fetchDepartment = asyncHandler(async (req, res) => {

@@ -1,41 +1,36 @@
 const asyncHandler = require("express-async-handler")
-const LecturerModel = require("../models/LecturerModel")
-const { sendEmail } = require("../utils/EmailUtils")
+const { generateQRCode } = require("../utils/QRCodeUtils")
+const AttendanceModel = require("../models/AttendanceModel")
 
-module.exports.registerLecturer = asyncHandler(async (req, res) => {
-  const { department, email, faculty, first_name, last_name, matriculation_number, phone } =
-    req.body
-  let generated_password = await generateRandomPassword(10)
-  const password = await hashPassword(generated_password)
+module.exports.addAttendance = asyncHandler(async (req, res) => {
+  const { course_id, end_time, start_time, user_id, latitude, longitude } = req.body
 
-  let lecturer = new LecturerModel.create({
-    department,
-    email,
-    faculty,
-    first_name,
-    last_name,
-    matriculation_number,
-    phone,
-    password,
+  const attendance = await AttendanceModel.create({
+    course_id,
+    end_time,
+    latitude,
+    longitude,
+    start_time,
+    user_id,
   })
-  if (lecturer) {
-    await sendEmail(email, "QRCode Attendance", `Your password is ${generated_password}`)
-    res.status(201).json({
-      message: "lecturer successfully created",
-      user: {
-        id: user._id,
-        first_name: user.firstName,
-        last_name: user.lastName,
-      },
-    })
-  } else {
-    res.status(400)
-    throw new Error("Failed to register, kindly try again")
-  }
+  const id = attendance._id
+  const qr_code = await generateQRCode({ id })
+  attendance.qr_code = qr_code
+  await attendance.save()
+  res.status(201).json(qr_code)
 })
 
-//fetch attendance for a course or time period
-module.exports.FetchAttendance = asyncHandler(async (req, res) => {})
+module.exports.markAttendance = asyncHandler(async (req, res) => {})
 
-//can only be done by students
-module.exports.AddAttendance = asyncHandler(async (req, res) => {})
+module.exports.fetchAttendance = asyncHandler(async (req, res) => {
+  const { id } = req.params
+  const attendance = await AttendanceModel.findById(id).populate(["attendees", "course_id"])
+  res.status(200).json(attendance)
+})
+
+module.exports.fetchAttendances = asyncHandler(async (req, res) => {
+  const attendances = await AttendanceModel.find({})
+    .select("_id course_id start_time end_time createdAt")
+    .populate("course_id")
+  res.status(200).json(attendances)
+})

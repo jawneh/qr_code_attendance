@@ -1,19 +1,19 @@
 import axios from "axios"
 import {
-  ADD_DEPARTMENT_FAIL,
-  ADD_DEPARTMENT_REQUEST,
-  ADD_DEPARTMENT_SUCCESS,
-  FETCH_DEPARTMENTS_FAIL,
-  FETCH_DEPARTMENTS_REQUEST,
-  FETCH_DEPARTMENTS_SUCCESS,
-  UPDATE_DEPARTMENT_FAIL,
-  UPDATE_DEPARTMENT_REQUEST,
-  UPDATE_DEPARTMENT_SUCCESS,
+  ADD_COURSE_FAIL,
+  ADD_COURSE_REQUEST,
+  ADD_COURSE_SUCCESS,
+  FETCH_COURSES_FAIL,
+  FETCH_COURSES_REQUEST,
+  FETCH_COURSES_SUCCESS,
+  FETCH_COURSE_FAIL,
+  FETCH_COURSE_REQUEST,
+  FETCH_COURSE_SUCCESS,
 } from "./Constants"
 
-export const addDepartmentAction = department_data => async (dispatch, getState) => {
+export const addCourseAction = course_data => async (dispatch, getState) => {
   try {
-    dispatch({ type: ADD_DEPARTMENT_REQUEST })
+    dispatch({ type: ADD_COURSE_REQUEST })
     const {
       qrCodeUserLogin: { user_info },
     } = getState()
@@ -23,20 +23,20 @@ export const addDepartmentAction = department_data => async (dispatch, getState)
         Authorization: `Bearer ${user_info.token}`,
       },
     }
-    let { data } = await axios.post("/department", department_data, config)
-    dispatch({ type: ADD_DEPARTMENT_SUCCESS, payload: data })
+    let { data } = await axios.post("/course", course_data, config)
+    dispatch({ type: ADD_COURSE_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
-      type: ADD_DEPARTMENT_FAIL,
+      type: ADD_COURSE_FAIL,
       payload:
         error.response && error.response.data.message ? error.response.data.message : error.message,
     })
   }
 }
 
-export const fetchDepartmentsAction = () => async (dispatch, getState) => {
+export const fetchCoursesAction = () => async (dispatch, getState) => {
   try {
-    dispatch({ type: FETCH_DEPARTMENTS_REQUEST })
+    dispatch({ type: FETCH_COURSES_REQUEST })
     const {
       qrCodeUserLogin: { user_info },
     } = getState()
@@ -46,20 +46,20 @@ export const fetchDepartmentsAction = () => async (dispatch, getState) => {
         Authorization: `Bearer ${user_info.token}`,
       },
     }
-    let { data } = await axios.get("/department", config)
-    dispatch({ type: FETCH_DEPARTMENTS_SUCCESS, payload: data })
+    let { data } = await axios.get("/course", "", config)
+    dispatch({ type: FETCH_COURSES_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
-      type: FETCH_DEPARTMENTS_FAIL,
+      type: FETCH_COURSES_FAIL,
       payload:
         error.response && error.response.data.message ? error.response.data.message : error.message,
     })
   }
 }
 
-export const updateDepartmentAction = department_data => async (dispatch, getState) => {
+export const fetchCourseAction = () => async (dispatch, getState) => {
   try {
-    dispatch({ type: UPDATE_DEPARTMENT_REQUEST })
+    dispatch({ type: FETCH_COURSE_REQUEST })
     const {
       qrCodeUserLogin: { user_info },
     } = getState()
@@ -69,12 +69,11 @@ export const updateDepartmentAction = department_data => async (dispatch, getSta
         Authorization: `Bearer ${user_info.token}`,
       },
     }
-
-    let { data } = await axios.patch("/department", department_data, config)
-    dispatch({ type: UPDATE_DEPARTMENT_SUCCESS, payload: data })
+    let { data } = await axios.get("/course", "", config)
+    dispatch({ type: FETCH_COURSE_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
-      type: UPDATE_DEPARTMENT_FAIL,
+      type: FETCH_COURSE_FAIL,
       payload:
         error.response && error.response.data.message ? error.response.data.message : error.message,
     })

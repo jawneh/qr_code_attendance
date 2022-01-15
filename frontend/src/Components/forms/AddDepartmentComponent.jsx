@@ -1,21 +1,28 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Row, Col, Form, Button } from "react-bootstrap"
+import { Row, Col, Form } from "react-bootstrap"
 import { Building } from "react-bootstrap-icons"
 import AlertComponent from "../AlertComponent"
 import LoaderComponent from "../LoaderComponent"
 import FormFieldComponent from "../FormFieldComponent"
 import { addDepartmentAction } from "../../redux/departments/Actions"
-import { AbsoluteCenter } from "../CustomStyledComponents"
+import { ADD_DEPARTMENT_FAIL } from "../../redux/departments/Constants"
+import { fecthFacultiesAction } from "../../redux/faculties/Actions"
+import { AbsoluteCenter, CustomButton } from "../CustomStyledComponents"
 
 const AddDepartmentComponent = () => {
   const dispatch = useDispatch()
 
-  const { loading, error, added_department_name } = useSelector(state => state.addDepartment)
+  const { loading, error, success } = useSelector(state => state.addDepartment)
 
-  const [department_name, setDepartmentName] = useState("")
-  const [faculty_name, setFacultyName] = useState("")
+  const [name, setDepartment] = useState("")
+  const [faculty_id, setFaculty] = useState("")
+  const fetchFaculties = useSelector(state => state.fetchFaculties)
+  const { faculties } = fetchFaculties
 
+  useEffect(() => {
+    dispatch(fecthFacultiesAction())
+  }, [dispatch])
   const form_arr = [
     {
       key: 1,
@@ -26,30 +33,31 @@ const AddDepartmentComponent = () => {
       required: true,
       placeholder: "",
       size: "sm",
-      value: department_name,
+      value: name,
       helper_text: "",
-      handleFieldValue: setDepartmentName,
+      handleFieldValue: setDepartment,
     },
     {
       key: 2,
       control_id: "faculty",
       label: "Faculty",
       icon: <Building color='green' />,
+      options: faculties,
       type: "select",
       required: true,
       placeholder: "",
       size: "sm",
-      value: faculty_name,
+      value: faculty_id,
       helper_text: "",
-      handleFieldValue: setFacultyName,
+      handleFieldValue: setFaculty,
     },
   ]
-  const addFaculty = e => {
+  const addDepartment = e => {
     e.preventDefault()
-    if (department_name) {
-      dispatch(addDepartmentAction({ name: department_name }))
+    if (name && faculty_id) {
+      dispatch(addDepartmentAction({ name, faculty_id }))
     } else {
-      alert("fill in the faculty")
+      dispatch({ type: ADD_DEPARTMENT_FAIL, payload: "Department and faculty are required" })
     }
   }
   return (
@@ -57,15 +65,13 @@ const AddDepartmentComponent = () => {
       <AbsoluteCenter>
         <Row>
           <Col sm='12' md='12' lg='12'>
-            <h1>Add faculty</h1>
+            <h4>Add Department</h4>
           </Col>
           <Col sm='12' md='12' lg='12'>
             {error && <AlertComponent variant='danger'>{error}</AlertComponent>}
-            {added_department_name && (
-              <AlertComponent variant='success'>{added_department_name}</AlertComponent>
-            )}
+            {success && <AlertComponent variant='success'>{success}</AlertComponent>}
             {loading && <LoaderComponent />}
-            <Form onSubmit={addFaculty}>
+            <Form onSubmit={addDepartment}>
               <Row>
                 {form_arr.map(field => (
                   <Col sm='12' md='6' lg='6' key={field.key}>
@@ -83,12 +89,12 @@ const AddDepartmentComponent = () => {
                     />
                   </Col>
                 ))}
-
+              </Row>
+              <Row>
                 <Col sm='12' md='6' lg='6'>
-                  <br />
-                  <Button className='' type='submit'>
-                    Add Faculty
-                  </Button>
+                  <CustomButton className='' type='submit'>
+                    Add Department
+                  </CustomButton>
                 </Col>
               </Row>
             </Form>

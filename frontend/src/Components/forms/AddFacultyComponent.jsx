@@ -1,10 +1,10 @@
 import React, { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Row, Col, Form, Button } from "react-bootstrap"
+import { Row, Col, Form } from "react-bootstrap"
 import { Building } from "react-bootstrap-icons"
 import { addFacultyAction } from "../../redux/faculties/Actions"
 import FormFieldComponent from "../FormFieldComponent"
-import { AbsoluteCenter } from "../CustomStyledComponents"
+import { AbsoluteCenter, CustomButton } from "../CustomStyledComponents"
 import LoaderComponent from "../LoaderComponent"
 import AlertComponent from "../AlertComponent"
 
@@ -17,7 +17,7 @@ const FacultyRegistrationComponent = () => {
 
   const form_arr = [
     {
-      key: 5,
+      key: 1,
       control_id: "faculty",
       label: "Faculty",
       icon: <Building color='green' />,
@@ -43,7 +43,7 @@ const FacultyRegistrationComponent = () => {
       <AbsoluteCenter>
         <Row>
           <Col sm='12' md='12' lg='12'>
-            <h1>Add faculty</h1>
+            <h4>Add Faculty</h4>
           </Col>
           <Col sm='12' md='12' lg='12'>
             {error && <AlertComponent variant='danger'>{error}</AlertComponent>}
@@ -69,12 +69,13 @@ const FacultyRegistrationComponent = () => {
                     />
                   </Col>
                 ))}
-
-                <Col sm='12' md='6' lg='6'>
+              </Row>
+              <Row>
+                <Col sm='12' md='12' lg='12'>
                   <br />
-                  <Button className='' type='submit'>
+                  <CustomButton className='' type='submit'>
                     Add Faculty
-                  </Button>
+                  </CustomButton>
                 </Col>
               </Row>
             </Form>

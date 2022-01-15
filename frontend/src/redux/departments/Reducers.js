@@ -15,7 +15,7 @@ export const addDepartmentReducer = (state = {}, action) => {
     case ADD_DEPARTMENT_REQUEST:
       return { ...state, loading: true }
     case ADD_DEPARTMENT_SUCCESS:
-      return { loading: false, added_faculty_name: action.payload }
+      return { loading: false, success: action.payload }
     case ADD_DEPARTMENT_FAIL:
       return { loading: false, error: action.payload }
     default:
@@ -23,12 +23,12 @@ export const addDepartmentReducer = (state = {}, action) => {
   }
 }
 
-export const fetchDepartmentsReducer = (state = { faculties: [] }, action) => {
+export const fetchDepartmentsReducer = (state = { departments: [] }, action) => {
   switch (action.type) {
     case FETCH_DEPARTMENTS_REQUEST:
       return { ...state, loading: true }
     case FETCH_DEPARTMENTS_SUCCESS:
-      return { loading: false, faculties: action.payload }
+      return { loading: false, departments: action.payload }
     case FETCH_DEPARTMENTS_FAIL:
       return { loading: false, error: action.payload }
     default:

@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Row, Col, Form, Button } from "react-bootstrap"
+import { userRegistrationAction } from "../../redux/users/Actions"
+import { fecthFacultiesAction } from "../../redux/faculties/Actions"
+import { fecthDepartmentsAction } from "../../redux/departments/Actions"
+import { USER_REGISTRATION_FAIL } from "../../redux/users/Constants"
+import FormFieldComponent from "../FormFieldComponent"
+import LoaderComponent from "../LoaderComponent"
+import AlertComponent from "../AlertComponent"
+import { AbsoluteCenter, CustomButton } from "../CustomStyledComponents"
+import { Row, Col, Form } from "react-bootstrap"
 import {
   PersonCircle,
   PeopleFill,
@@ -12,29 +20,44 @@ import {
   LockFill,
   UnlockFill,
 } from "react-bootstrap-icons"
-import { userRegistrationAction } from "../../redux/users/Actions"
-import { fecthFacultiesAction } from "../../redux/faculties/Actions"
-import FormFieldComponent from "../FormFieldComponent"
-import { AbsoluteCenter } from "../CustomStyledComponents"
 
 const RegistrationPage = () => {
   const dispatch = useDispatch()
-  const fetchFaculties = useSelector(state => state.fetchFaculties)
-  const { faculties } = fetchFaculties
 
-  useEffect(() => {
-    dispatch(fecthFacultiesAction())
-  }, [dispatch])
-
-  const [department, setDepartment] = useState("")
+  const [department_id, setDepartment] = useState("")
   const [email, setEmail] = useState("")
-  const [faculty, setFaculty] = useState("")
+  const [faculty_id, setFaculty] = useState("")
   const [first_name, setFirstName] = useState("")
   const [last_name, setLastName] = useState("")
-  const [staff_id, setStaffId] = useState("")
+  const [university_id, setUniversityId] = useState("")
   const [password, setPassword] = useState("")
   const [confirm_password, setConfirmPassword] = useState("")
   const [phone, setPhone] = useState("")
+
+  const userRegistration = useSelector(state => state.userRegistration)
+  const { loading, success, error } = userRegistration
+
+  const fetchFaculties = useSelector(state => state.fetchFaculties)
+  const { faculties } = fetchFaculties
+
+  const fetchDepartments = useSelector(state => state.fetchDepartments)
+  const { departments } = fetchDepartments
+
+  useEffect(() => {
+    dispatch(fecthFacultiesAction())
+    dispatch(fecthDepartmentsAction())
+
+    if (success) {
+      setDepartment("")
+      setEmail("")
+      setFirstName("")
+      setLastName("")
+      setUniversityId("")
+      setPassword("")
+      setConfirmPassword("")
+      setPhone("")
+    }
+  }, [dispatch, success])
 
   const form_arr = [
     {
@@ -66,15 +89,15 @@ const RegistrationPage = () => {
     {
       key: 3,
       control_id: "staff_id",
-      label: "Staff Id",
+      label: "Univeristy Id",
       icon: <CardHeading color='green' />,
       type: "text",
       required: true,
       placeholder: "A1232NA",
       size: "sm",
-      value: staff_id,
+      value: university_id,
       helper_text: "Your work identity",
-      handleFieldValue: setStaffId,
+      handleFieldValue: setUniversityId,
     },
     {
       key: 4,
@@ -99,7 +122,7 @@ const RegistrationPage = () => {
       options: faculties,
       placeholder: "",
       size: "sm",
-      value: faculty,
+      value: faculty_id,
       helper_text: "",
       handleFieldValue: setFaculty,
     },
@@ -110,10 +133,10 @@ const RegistrationPage = () => {
       icon: <HouseFill color='green' />,
       type: "select",
       required: true,
-      options: ["Law", "Medicine", "Account"],
+      options: departments,
       placeholder: "",
       size: "sm",
-      value: department,
+      value: department_id,
       helper_text: "",
       handleFieldValue: setDepartment,
     },
@@ -135,7 +158,7 @@ const RegistrationPage = () => {
       control_id: "password",
       label: "Password",
       icon: <LockFill color='green' />,
-      type: "text",
+      type: "password",
       required: true,
       placeholder: "xxxxxx",
       size: "sm",
@@ -148,7 +171,7 @@ const RegistrationPage = () => {
       control_id: "confirm_password",
       label: "Confirm Password",
       icon: <UnlockFill color='green' />,
-      type: "text",
+      type: "password",
       required: true,
       placeholder: "xxxxxx",
       size: "sm",
@@ -164,14 +187,31 @@ const RegistrationPage = () => {
       first_name,
       last_name,
       email,
-      staff_id,
-      faculty,
-      department,
+      university_id,
+      faculty_id,
+      department_id,
       phone,
       password,
       confirm_password,
     }
-    dispatch(userRegistrationAction(user_data))
+    if (
+      first_name &&
+      last_name &&
+      email &&
+      university_id &&
+      faculty_id &&
+      department_id &&
+      phone &&
+      password
+    ) {
+      if (password === confirm_password) {
+        dispatch(userRegistrationAction(user_data))
+      } else {
+        dispatch({ type: USER_REGISTRATION_FAIL, payload: "Passwords do not match" })
+      }
+    } else {
+      dispatch({ type: USER_REGISTRATION_FAIL, payload: "Fill in all required fields" })
+    }
   }
   return (
     <>
@@ -181,6 +221,9 @@ const RegistrationPage = () => {
             <h1>Register</h1>
           </Col>
           <Col sm='12' md='12' lg='12'>
+            {error && <AlertComponent variant='danger'>{error}</AlertComponent>}
+            {success && <AlertComponent variant='success'>{success}</AlertComponent>}
+            {loading && <LoaderComponent />}
             <Form onSubmit={registerUser}>
               <Row>
                 {form_arr.map(field => (
@@ -199,12 +242,12 @@ const RegistrationPage = () => {
                     />
                   </Col>
                 ))}
-
-                <Col sm='12' md='6' lg='6'>
-                  <br />
-                  <Button className='' type='submit'>
+              </Row>
+              <Row>
+                <Col sm='12' md='12' lg='12'>
+                  <CustomButton className='' type='submit'>
                     Register me
-                  </Button>
+                  </CustomButton>
                 </Col>
               </Row>
             </Form>

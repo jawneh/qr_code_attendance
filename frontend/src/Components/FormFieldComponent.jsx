@@ -13,7 +13,7 @@ const FormFieldComponent = ({
   helper_text,
   handleFieldValue,
 }) => {
-  if (type === "text" || type === "password") {
+  if (type === "text" || type === "password" || type === "time") {
     return (
       <Form.Group className='mb-3' controlId={control_id}>
         <Form.Label>

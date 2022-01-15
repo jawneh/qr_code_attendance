@@ -1,6 +1,24 @@
 const express = require("express")
 const router = express.Router()
+const {
+  fetchAttendance,
+  addAttendance,
+  markAttendance,
+  fetchAttendances,
+} = require("../controllers/AttendanceController")
+const { verifyCourseExist } = require("../middlewares/VerificationMiddleware")
+const {
+  authBearerToken,
+  authLecturerAccess,
+  authStudentAccess,
+} = require("../middlewares/AuthenticationMiddleware")
 
-router.get("/", console.log("get attendanceN"))
-router.get("/:id", console.log("get attendanceN"))
-router.post("/", console.log("post attendance"))
+router.get("/:id", authBearerToken, authLecturerAccess, fetchAttendance)
+
+router.get("/", authBearerToken, authLecturerAccess, fetchAttendances)
+
+router.post("/", authBearerToken, authLecturerAccess, verifyCourseExist, addAttendance)
+
+router.post("/mark", authBearerToken, authStudentAccess, markAttendance)
+
+module.exports = router

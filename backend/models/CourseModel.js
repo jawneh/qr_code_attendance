@@ -3,10 +3,12 @@ const { Schema } = moongoose
 
 const CourseSchema = new Schema(
   {
-    course_code: { type: String, required: true },
-    course_title: { type: String, required: true },
-    course_unit: { type: Number, required: true },
-    lecturer: { type: Object, required: true },
+    code: { type: String, required: true },
+    department_id: { type: Schema.Types.ObjectId, ref: "departments" },
+    faculty_id: { type: Schema.Types.ObjectId, ref: "faculties" },
+    name: { type: String, required: true },
+    lecturer_id: { type: Schema.Types.ObjectId, ref: "users" },
+    unit: { type: Number, required: true },
   },
   {
     timestamps: true,

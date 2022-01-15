@@ -30,7 +30,7 @@ export const fetchFacultiesReducer = (state = { faculties: [] }, action) => {
     case FETCH_FACULTIES_SUCCESS:
       return { loading: false, faculties: action.payload }
     case FETCH_FACULTIES_FAIL:
-      return { loading: false, error: action.payload }
+      return { ...state, loading: false, error: action.payload }
     default:
       return state
   }
