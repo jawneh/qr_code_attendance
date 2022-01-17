@@ -15,7 +15,7 @@ module.exports.registerUser = asyncHandler(async (req, res) => {
     email,
     faculty_id,
     department_id,
-    mac_address
+    mac_address,
     password,
     phone,
   } = req.body
