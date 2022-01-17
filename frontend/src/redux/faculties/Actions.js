@@ -44,7 +44,7 @@ export const fetchFacultiesAction = () => async (dispatch, getState) => {
       },
     }
 
-    let { data } = await axios.get("/faculty", "", config)
+    let { data } = await axios.get("/faculty", config)
     dispatch({ type: FETCH_FACULTIES_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
