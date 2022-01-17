@@ -23,6 +23,7 @@ module.exports.addAttendance = asyncHandler(async (req, res) => {
 
 module.exports.markAttendance = asyncHandler(async (req, res) => {
   console.log(req.body)
+  console.log(req.body.mac_address)
   const { id, mac_address } = req.body
   const user = await UserModel.findOne({ mac_address }).select("_id")
   if (user && user._id) {
@@ -30,6 +31,7 @@ module.exports.markAttendance = asyncHandler(async (req, res) => {
     await AttendanceModel.updateOne({ _id: id }, { $push: { attendees: user._id } })
     res.status(201).json("Attendance marked")
   } else {
+    res.status(404)
     throw new Error("user not found")
   }
 })
