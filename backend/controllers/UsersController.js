@@ -15,6 +15,7 @@ module.exports.registerUser = asyncHandler(async (req, res) => {
     email,
     faculty_id,
     department_id,
+    mac_address
     password,
     phone,
   } = req.body
@@ -28,6 +29,7 @@ module.exports.registerUser = asyncHandler(async (req, res) => {
     last_name,
     password: hash_password,
     phone,
+    mac_address,
     university_id,
   })
   if (user) {

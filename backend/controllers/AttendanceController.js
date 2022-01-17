@@ -20,7 +20,9 @@ module.exports.addAttendance = asyncHandler(async (req, res) => {
   res.status(201).json(qr_code)
 })
 
-module.exports.markAttendance = asyncHandler(async (req, res) => {})
+module.exports.markAttendance = asyncHandler(async (req, res) => {
+  const { id, mac_address } = req.body
+})
 
 module.exports.fetchAttendance = asyncHandler(async (req, res) => {
   const { id } = req.params
