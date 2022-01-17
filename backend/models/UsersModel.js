@@ -14,7 +14,7 @@ const UsersSchema = new Schema(
     is_student: { type: Boolean, required: true, default: true },
     last_name: { type: String, required: true },
     login_attempts: { type: Number, default: 0, required: true },
-    mark_address: { type: String, required: false, unique: true },
+    mac_address: { type: String, required: false },
     password: { type: String, required: true },
     phone: { type: Number, required: false },
     university_id: { type: String, required: true, unique: true },
