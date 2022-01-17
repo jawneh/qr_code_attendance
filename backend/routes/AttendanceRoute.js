@@ -19,6 +19,7 @@ router.get("/", authBearerToken, authLecturerAccess, fetchAttendances)
 
 router.post("/", authBearerToken, authLecturerAccess, verifyCourseExist, addAttendance)
 
-router.post("/mark", authBearerToken, authStudentAccess, markAttendance)
+// router.post("/mark", authBearerToken, authStudentAccess, markAttendance)
+router.post("/mark", markAttendance)
 
 module.exports = router
