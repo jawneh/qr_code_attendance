@@ -27,6 +27,7 @@ const AttendancePage = () => {
     } else {
       if (id) {
         dispatch(getAttendanceAction(id))
+        console.log(attendees)
       } else {
         navigateTo("/attendances")
       }
@@ -36,6 +37,7 @@ const AttendancePage = () => {
   const columns = [
     { name: "s/n", selector: row => row.s_n, sortable: true, width: "10%" },
     { name: "Matric Number", selector: row => row.university_id, sortable: true, width: "20%" },
+    { name: "Name", selector: row => row.name, sortable: true, width: "20%" },
     { name: "Faculty", selector: row => row.faculty, sortable: false, width: "10%" },
     { name: "Department", selector: row => row.department, sortable: true, width: "20%" },
     { name: "Email", selector: row => row.email, sortable: true, width: "20%" },
@@ -47,6 +49,7 @@ const AttendancePage = () => {
       ? attendees.map((x, index) => ({
           s_n: index + 1,
           university_id: <Moment format='Do MMMM YYYY'>{x.createdAt}</Moment>,
+          name: x.name,
           faculty: x.course_id,
           department: x.start_time,
           email: x.end_time,

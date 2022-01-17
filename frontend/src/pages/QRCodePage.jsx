@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
 import LoaderComponent from "../Components/LoaderComponent"
 import AlertComponent from "../Components/AlertComponent"
 import FormFieldComponent from "../Components/FormFieldComponent"
@@ -18,13 +19,16 @@ import { Row, Col, Form, Image, Breadcrumb, Container } from "react-bootstrap"
 import { QrCode, CodeSquare } from "react-bootstrap-icons"
 const QRCodePage = () => {
   const dispatch = useDispatch()
+  const navigateTo = useNavigate()
+
   const [course_id, setCourseId] = useState("")
   const [end_time, setEndTime] = useState("")
   const [start_time, setStartTime] = useState("")
+
   const qrCodeUserLogin = useSelector(state => state.qrCodeUserLogin)
-  const {
-    user_info: { user_id },
-  } = qrCodeUserLogin
+  const { user_info } = qrCodeUserLogin
+  const { token, user_id } = user_info
+
   const qrCodeGenerate = useSelector(state => state.qrCodeGenerate)
   const { loading, qrcode, error } = qrCodeGenerate
 
@@ -32,9 +36,13 @@ const QRCodePage = () => {
   const { courses } = fetchCourses
 
   useEffect(() => {
-    dispatch({ type: QRCODE_GENERATE_RESET })
-    dispatch(fetchCoursesAction())
-  }, [dispatch])
+    if (!token) {
+      navigateTo("/login")
+    } else {
+      dispatch({ type: QRCODE_GENERATE_RESET })
+      dispatch(fetchCoursesAction())
+    }
+  }, [dispatch, token, navigateTo])
 
   const form_arr = [
     {

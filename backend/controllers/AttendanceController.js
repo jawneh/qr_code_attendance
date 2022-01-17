@@ -22,8 +22,6 @@ module.exports.addAttendance = asyncHandler(async (req, res) => {
 })
 
 module.exports.markAttendance = asyncHandler(async (req, res) => {
-  console.log(req.body)
-  console.log(req.body.mac_address)
   const { id, mac_address } = req.body
   const user = await UserModel.findOne({ mac_address }).select("_id")
   if (user && user._id) {
