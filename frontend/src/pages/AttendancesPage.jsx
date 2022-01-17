@@ -12,7 +12,7 @@ const AttendancePage = () => {
   const { token } = user_info
 
   useEffect(() => {
-    if (token) {
+    if (!token) {
       navigateTo("/login")
     }
   }, [navigateTo, token])
