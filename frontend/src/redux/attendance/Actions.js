@@ -20,7 +20,7 @@ export const getAttendanceAction = id => async (dispatch, getState) => {
         Authorization: `Bearer ${user_info.token}`,
       },
     }
-    let { data } = await axios.get(`/attendance/${id}`, "", config)
+    let { data } = await axios.get(`/attendance/${id}`, config)
     dispatch({ type: GET_ATTENDANCE_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
@@ -43,7 +43,7 @@ export const getAttendancesAction = () => async (dispatch, getState) => {
         Authorization: `Bearer ${user_info.token}`,
       },
     }
-    let { data } = await axios.get("/attendance", "", config)
+    let { data } = await axios.get("/attendance", config)
     dispatch({ type: GET_ATTENDANCES_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
