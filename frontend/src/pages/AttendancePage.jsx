@@ -27,7 +27,6 @@ const AttendancePage = () => {
     } else {
       if (id) {
         dispatch(getAttendanceAction(id))
-        console.log(attendees)
       } else {
         navigateTo("/attendances")
       }
@@ -36,23 +35,24 @@ const AttendancePage = () => {
 
   const columns = [
     { name: "s/n", selector: row => row.s_n, sortable: true, width: "10%" },
-    { name: "Matric Number", selector: row => row.university_id, sortable: true, width: "20%" },
-    { name: "Name", selector: row => row.name, sortable: true, width: "20%" },
-    { name: "Faculty", selector: row => row.faculty, sortable: false, width: "10%" },
-    { name: "Department", selector: row => row.department, sortable: true, width: "20%" },
+    { name: "Matric Number", selector: row => row.university_id, sortable: true, width: "15%" },
+    { name: "Name", selector: row => row.name, sortable: true, width: "10%" },
+    { name: "Faculty", selector: row => row.faculty, sortable: false, width: "20%" },
+    { name: "Department", selector: row => row.department, sortable: true, width: "15%" },
     { name: "Email", selector: row => row.email, sortable: true, width: "20%" },
-    { name: "Phone", selector: row => row.phone, sortable: true, width: "20%" },
+    { name: "Phone", selector: row => row.phone, sortable: true, width: "10%" },
   ]
 
   const table_data =
     attendees && attendees.length > 0
       ? attendees.map((x, index) => ({
+          key: index,
           s_n: index + 1,
-          university_id: <Moment format='Do MMMM YYYY'>{x.createdAt}</Moment>,
-          name: x.name,
-          faculty: x.course_id,
-          department: x.start_time,
-          email: x.end_time,
+          university_id: x.university_id,
+          name: x.first_name + " " + x.last_name,
+          faculty: x.faculty_id.name,
+          department: x.department_id.name,
+          email: x.email,
           phone: x.phone,
         }))
       : []
@@ -80,7 +80,7 @@ const AttendancePage = () => {
         <p>
           {start_time} - {end_time}
         </p>
-        <AbsoluteCenter max_width='75vw'>
+        <AbsoluteCenter max_width='90vw'>
           <TabulateComponent
             title='Attendees'
             columns={columns}

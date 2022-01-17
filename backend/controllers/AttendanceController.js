@@ -35,7 +35,12 @@ module.exports.markAttendance = asyncHandler(async (req, res) => {
 
 module.exports.fetchAttendance = asyncHandler(async (req, res) => {
   const { id } = req.params
-  const attendance = await AttendanceModel.findById(id).populate(["attendees", "course_id"])
+  const attendance = await AttendanceModel.findById(id)
+    .populate("course_id")
+    .populate({
+      path: "attendees",
+      populate: ["faculty_id", "department_id"],
+    })
   res.status(200).json(attendance)
 })
 
