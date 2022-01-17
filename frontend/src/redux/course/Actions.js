@@ -46,7 +46,7 @@ export const fetchCoursesAction = () => async (dispatch, getState) => {
         Authorization: `Bearer ${user_info.token}`,
       },
     }
-    let { data } = await axios.get("/course", "", config)
+    let { data } = await axios.get("/course", config)
     dispatch({ type: FETCH_COURSES_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
@@ -69,7 +69,7 @@ export const fetchCourseAction = () => async (dispatch, getState) => {
         Authorization: `Bearer ${user_info.token}`,
       },
     }
-    let { data } = await axios.get("/course", "", config)
+    let { data } = await axios.get("/course", config)
     dispatch({ type: FETCH_COURSE_SUCCESS, payload: data })
   } catch (error) {
     dispatch({
