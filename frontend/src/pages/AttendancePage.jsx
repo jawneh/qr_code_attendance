@@ -22,7 +22,7 @@ const AttendancePage = () => {
   const { attendees, course_id, end_time, start_time, latitude, longitude, qr_code, createdAt } =
     attendance
   useEffect(() => {
-    if (token) {
+    if (!token) {
       navigateTo("/login")
     } else {
       if (id) {
