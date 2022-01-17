@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler")
 const { generateQRCode } = require("../utils/QRCodeUtils")
 const AttendanceModel = require("../models/AttendanceModel")
+const UserModel = require("../models/UsersModel")
 
 module.exports.addAttendance = asyncHandler(async (req, res) => {
   const { course_id, end_time, start_time, user_id, latitude, longitude } = req.body
@@ -22,6 +23,12 @@ module.exports.addAttendance = asyncHandler(async (req, res) => {
 
 module.exports.markAttendance = asyncHandler(async (req, res) => {
   const { id, mac_address } = req.body
+  const user = await UserModel.findOne({ mac_address }).select("_id")
+  if (user && user._id) {
+    await FacultyModel.updateOne({ _id: faculty_id }, { $push: { departments: department._id } })
+    await AttendanceModel.updateOne({ _id: id }, { $push: { attendees: user._id } })
+    res.status(201).json("Attendance marked")
+  }
 })
 
 module.exports.fetchAttendance = asyncHandler(async (req, res) => {
