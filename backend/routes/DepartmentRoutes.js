@@ -10,7 +10,7 @@ const { verifyFacultyExist } = require("../middlewares/VerificationMiddleware")
 const { authBearerToken, authAdminAccess } = require("../middlewares/AuthenticationMiddleware")
 
 router.get("/:id", authBearerToken, fetchDepartment)
-router.get("/", authBearerToken, fetchDepartments)
+router.get("/", fetchDepartments)
 router.post("/", authBearerToken, authAdminAccess, verifyFacultyExist, addDepartment)
 router.patch("/:id", authBearerToken, authAdminAccess, updateDepartment)
 

@@ -94,32 +94,32 @@ const QRCodePage = () => {
         payload: "Geoloaction is not supported by your browser",
       })
     } else {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          if (course_id && start_time && end_time && user_id) {
-            const qr_code_data = {
-              course_id,
-              end_time,
-              start_time,
-              user_id,
-              longitude: position.coords.latitude,
-              latitude: position.coords.longitude,
-            }
-            dispatch(generateQRCodeAction(qr_code_data))
-          } else {
-            dispatch({
-              type: QRCODE_GENERATE_FAIL,
-              payload: "Course,start time and end time are all required",
-            })
-          }
-        },
-        () => {
-          dispatch({
-            type: QRCODE_GENERATE_FAIL,
-            payload: "Unable to get your location",
-          })
+      // navigator.geolocation.getCurrentPosition(
+      //   position => {
+      if (course_id && start_time && end_time && user_id) {
+        const qr_code_data = {
+          course_id,
+          end_time,
+          start_time,
+          user_id,
+          longitude: "NA",
+          latitude: "NA",
         }
-      )
+        dispatch(generateQRCodeAction(qr_code_data))
+      } else {
+        dispatch({
+          type: QRCODE_GENERATE_FAIL,
+          payload: "Course,start time and end time are all required",
+        })
+      }
+      //   },
+      //   () => {
+      //     dispatch({
+      //       type: QRCODE_GENERATE_FAIL,
+      //       payload: "Unable to get your location",
+      //     })
+      //   }
+      // )
     }
   }
   return (
