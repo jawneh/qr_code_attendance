@@ -4,6 +4,8 @@ const {
   registerUser,
   loginUser,
   fetchUser,
+  fetchStudents,
+  fetchStudent,
   fetchUsers,
   addCourse,
 } = require("../controllers/UsersController")
@@ -14,6 +16,8 @@ const {
 } = require("../middlewares/VerificationMiddleware")
 const { authBearerToken, authAdminAccess } = require("../middlewares/AuthenticationMiddleware")
 
+router.get("/students", authBearerToken, authAdminAccess, fetchStudents)
+router.get("/student", authBearerToken, authAdminAccess, fetchStudent)
 router.get("/:id", authBearerToken, authAdminAccess, fetchUser)
 router.get("/", authBearerToken, authAdminAccess, fetchUsers)
 

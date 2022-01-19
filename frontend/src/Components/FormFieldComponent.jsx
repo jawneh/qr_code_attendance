@@ -47,11 +47,12 @@ const FormFieldComponent = ({
           <option value=''>Choose one</option>
           {options &&
             options.map((opt, index) => (
-              <option value={opt._id} key={index}>
-                {opt.name}
+              <option value={opt._id || opt} key={index}>
+                {opt.name || opt}
               </option>
             ))}
         </Form.Select>
+        <Form.Text className='text-muted'>{helper_text}</Form.Text>
       </Form.Group>
     )
   } else {

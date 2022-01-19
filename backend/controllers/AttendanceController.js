@@ -1,19 +1,22 @@
 const asyncHandler = require("express-async-handler")
-const { generateQRCode } = require("../utils/QRCodeUtils")
+const moment = require("moment")
 const AttendanceModel = require("../models/AttendanceModel")
 const UserModel = require("../models/UsersModel")
+const { generateQRCode } = require("../utils/QRCodeUtils")
 
 module.exports.addAttendance = asyncHandler(async (req, res) => {
-  const { course_id, end_time, start_time, user_id, latitude, longitude } = req.body
-
+  const { course_id, end_time, start_time, user_id, latitude, longitude, expiry } = req.body
+  expiry = moment().add(Number(expiry), "m")
   const attendance = await AttendanceModel.create({
     course_id,
     end_time,
+    expiry,
     latitude,
     longitude,
     start_time,
     user_id,
   })
+
   const id = attendance._id
   const qr_code = await generateQRCode({ id })
   attendance.qr_code = qr_code
@@ -23,10 +26,24 @@ module.exports.addAttendance = asyncHandler(async (req, res) => {
 
 module.exports.markAttendance = asyncHandler(async (req, res) => {
   const { id, mac_address } = req.body
+  const now = moment()
+
   const user = await UserModel.findOne({ mac_address }).select("_id")
   if (user && user._id) {
-    await AttendanceModel.updateOne({ _id: id }, { $push: { attendees: user._id } })
-    res.status(201).json("Attendance marked")
+    const attendance = await AttendanceModel.findOne({ _id: id })
+    //check if attendance has not expired
+    if (attendance && moment().isBefore(attendance.expiry)) {
+      if (attendance.attendees.include(user._id)) {
+        res.status(401)
+        throw new Error("You have already marked attendance")
+      } else {
+        await AttendanceModel.updateOne({ _id: id }, { $push: { attendees: user._id } })
+        res.status(201).json("Attendance successfully marked")
+      }
+    } else {
+      res.status(401)
+      throw new Error("Attendance for this session has expired")
+    }
   } else {
     res.status(404)
     throw new Error("user not found")

@@ -122,8 +122,34 @@ module.exports.fetchUser = asyncHandler(async (req, res) => {
     res.status(200).json(user)
   } else {
     res.status(404)
-    throw new Error("Administrator doesn't exist")
+    throw new Error("User doesn't exist")
   }
+})
+
+//@desc get all users for admin
+//@route GET /api/student/
+//@access Private/Admin
+module.exports.fetchStudent = asyncHandler(async (req, res) => {
+  const { id } = req.params.id
+  const student = await User.findOne({ _id: id })
+    .select("-password")
+    .populate(["faculties", "courses", "departments"])
+  if (stuent) {
+    res.status(200).json(student)
+  } else {
+    res.status(404)
+    throw new Error("Student doesn't exist")
+  }
+})
+
+//@desc get all users for admin
+//@route GET /api/users/
+//@access Private/Admin
+module.exports.fetchStudents = asyncHandler(async (req, res) => {
+  students = await UserModel.find({ is_student: true, is_lecturer: false, is_admin: false })
+    .select("-password")
+    .populate(["department_id", "faculty_id"])
+  res.status(200).json(stuents)
 })
 
 module.exports.changePassword = asyncHandler(async (req, res) => {

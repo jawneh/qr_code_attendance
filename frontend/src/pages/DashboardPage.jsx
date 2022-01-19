@@ -6,6 +6,7 @@ import { primaryColor, secondaryColor } from "../Components/CustomStyledComponen
 import { Container, Row, Col } from "react-bootstrap"
 import {
   PersonBadge,
+  PeopleFill,
   QrCodeScan,
   ListCheck,
   LifePreserver,
@@ -38,6 +39,11 @@ const DashboardPage = () => {
     },
     {
       icon: <PersonBadge color={icon_color} size={icon_size} />,
+      title: "Admin/Lecturers",
+      navigate_to: "/users",
+    },
+    {
+      icon: <PeopleFill color={icon_color} size={icon_size} />,
       title: "Students",
       navigate_to: "/student",
     },

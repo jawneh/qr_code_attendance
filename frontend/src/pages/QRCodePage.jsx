@@ -16,7 +16,7 @@ import {
   secondaryColor,
 } from "../Components/CustomStyledComponents"
 import { Row, Col, Form, Image, Breadcrumb, Container } from "react-bootstrap"
-import { QrCode, CodeSquare } from "react-bootstrap-icons"
+import { QrCode, CodeSquare, XSquareFill } from "react-bootstrap-icons"
 const QRCodePage = () => {
   const dispatch = useDispatch()
   const navigateTo = useNavigate()
@@ -24,6 +24,7 @@ const QRCodePage = () => {
   const [course_id, setCourseId] = useState("")
   const [end_time, setEndTime] = useState("")
   const [start_time, setStartTime] = useState("")
+  const [expiry, setExpiry] = useState(20)
 
   const qrCodeUserLogin = useSelector(state => state.qrCodeUserLogin)
   const { user_info } = qrCodeUserLogin
@@ -48,7 +49,7 @@ const QRCodePage = () => {
     {
       key: 1,
       control_id: "course",
-      label: "Course",
+      label: "Course *",
       icon: <CodeSquare color={primaryColor} />,
       type: "select",
       required: true,
@@ -62,7 +63,7 @@ const QRCodePage = () => {
     {
       key: 2,
       control_id: "start_id",
-      label: "Start time",
+      label: "Start time *",
       icon: <CodeSquare color={primaryColor} />,
       type: "time",
       required: true,
@@ -75,7 +76,7 @@ const QRCodePage = () => {
     {
       key: 3,
       control_id: "end_time",
-      label: "End time",
+      label: "End time *",
       icon: <CodeSquare color={primaryColor} />,
       type: "time",
       required: true,
@@ -84,6 +85,20 @@ const QRCodePage = () => {
       value: end_time,
       helper_text: "",
       handleFieldValue: setEndTime,
+    },
+    {
+      key: 4,
+      control_id: "expiry",
+      label: "Expiration (in minutes) *",
+      icon: <XSquareFill color={primaryColor} />,
+      type: "select",
+      required: true,
+      options: [5, 10, 15, 20, 30, 45, 60],
+      placeholder: "",
+      size: "sm",
+      value: expiry,
+      helper_text: "QRCode will expire after minutes selected",
+      handleFieldValue: setExpiry,
     },
   ]
   const handleGenerateQRCode = e => {
@@ -100,6 +115,7 @@ const QRCodePage = () => {
         const qr_code_data = {
           course_id,
           end_time,
+          expiry,
           start_time,
           user_id,
           longitude: "NA",
