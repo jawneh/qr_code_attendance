@@ -5,7 +5,7 @@ const UserModel = require("../models/UsersModel")
 const { generateQRCode } = require("../utils/QRCodeUtils")
 
 module.exports.addAttendance = asyncHandler(async (req, res) => {
-  const { course_id, end_time, start_time, user_id, latitude, longitude, expiry } = req.body
+  let { course_id, end_time, start_time, user_id, latitude, longitude, expiry } = req.body
   expiry = moment().add(Number(expiry), "m")
   const attendance = await AttendanceModel.create({
     course_id,
