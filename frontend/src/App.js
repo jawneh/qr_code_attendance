@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage"
 import NotFoundPage from "./pages/NotFoundPage"
 import QRCodePage from "./pages/QRCodePage"
 import StudentPage from "./pages/StudentPage"
+import DepartmentPage from "./pages/DepartmentPage"
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route exact path='/attendance/:id' element={<AttendancePage />}></Route>
         <Route exact path='/attendance' element={<AttendancesPage />}></Route>
         <Route exact path='/course' element={<CoursePage />}></Route>
+        <Route exact path='/department' element={<DepartmentPage />}></Route>
         <Route exact path='/faculty' element={<FacultyPage />}></Route>
         <Route exact path='/login' element={<LoginPage />}></Route>
         <Route exact path='/qrcode' element={<QRCodePage />}></Route>
