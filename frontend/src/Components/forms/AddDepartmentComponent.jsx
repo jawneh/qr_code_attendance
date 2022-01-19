@@ -7,7 +7,7 @@ import LoaderComponent from "../LoaderComponent"
 import FormFieldComponent from "../FormFieldComponent"
 import { addDepartmentAction } from "../../redux/departments/Actions"
 import { ADD_DEPARTMENT_FAIL } from "../../redux/departments/Constants"
-import { fecthFacultiesAction } from "../../redux/faculties/Actions"
+import { fetchFacultiesAction } from "../../redux/faculties/Actions"
 import { AbsoluteCenter, CustomButton } from "../CustomStyledComponents"
 
 const AddDepartmentComponent = () => {
@@ -21,7 +21,7 @@ const AddDepartmentComponent = () => {
   const { faculties } = fetchFaculties
 
   useEffect(() => {
-    dispatch(fecthFacultiesAction())
+    dispatch(fetchFacultiesAction())
   }, [dispatch])
   const form_arr = [
     {
